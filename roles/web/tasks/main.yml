@@ -1,0 +1,16 @@
+---
+
+- name: Install apache package
+  apt: name=apache2 state=present force_apt_get=yes
+
+- name: copy apache index file
+  copy: src=index.html dest=/var/www/html/index.html
+  tags: apache
+  notify: restart apache service
+
+- name: add firewall rule 
+  shell: iptables -I INPUT -p tcp --dport http -j ACCEPT -m comment --comment "Apache port 80"
+  tags: apache
+- name: Save Ip tables
+  command: iptables-save
+  tags: apache

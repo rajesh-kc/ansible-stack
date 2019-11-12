@@ -1,0 +1,5 @@
+[all]
+webserver ansible_ssh_user=ubuntu
+
+[webgroup]
+webserver ansible_ssh_user=ubuntu

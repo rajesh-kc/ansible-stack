@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  tasks:
+
+#- name: Apply common configuration
+#  hosts: all
+#  user: ubuntu
+#  become: yes
+#  become_method: sudo
+#  tasks:
+#  roles:
+#    - common
+
+- name: Install and config webserver
+  hosts: webserver
+  user: ubuntu
+  become: yes
+  become_method: sudo
+  tasks: 
+  roles:
+    - web 

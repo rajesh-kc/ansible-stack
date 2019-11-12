@@ -1,0 +1,17 @@
+---
+
+- name: Configure dns clinet
+  template: src=resolv.conf dest=/etc/resolv.conf
+  tags: dns
+
+- name: Install net-tools
+  yum: name=net-tools state=present
+
+- name: Install ntp
+  yum: name=ntp state=present
+  tags: ntp
+
+- name: copy ntp file
+  template: src=ntp.conf dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp service
