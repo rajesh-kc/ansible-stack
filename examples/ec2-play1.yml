@@ -1,0 +1,50 @@
+---
+
+- hosts: localhost
+
+  tasks:
+
+   - name: Setup ansible ec2 security and firewall group
+     ec2_group:
+      name: Ansible_Aws_Security_Group
+      description: Rules allowing traffic on port 22 and 80
+      region: ap-south-1
+      rules:
+       - proto: tcp
+         from_port: 80
+         to_port: 80
+         cidr_ip: 0.0.0.0/0
+       - proto: tcp
+         from_port: 22
+         to_port: 22
+         cidr_ip: 0.0.0.0/0
+      rules_egress:
+       - proto: all
+         cidr_ip: 0.0.0.0/0
+
+
+   - name: Provisioning an ec2 instance
+     ec2:
+      key_name: id_rsa
+      region: ap-south-1
+      instance_type: t2.micro
+      image: ami-0123b531fc646552f 
+      wait: yes
+      count: 1
+      vpc_subnet_id: subnet-d96749b1
+      assign_public_ip: yes
+      wait_timeout: 500
+      instance_tags:
+       Name: AnsibleLinuxTwelve
+       Owner: Rajesh K
+      monitoring: no
+      group: Ansible_Aws_Security_Group
+     register: ec2_out
+
+
+   - name: Wait for ssh to boot up
+     delegate_to: "{{ item.public_dns_name }}"
+     wait_for_connection:
+      delay: 60
+      timeout: 320
+     loop: "{{ ec2_out.instances }}"
